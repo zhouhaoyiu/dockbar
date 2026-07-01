@@ -47,11 +47,11 @@ export class DockItem extends LitElement {
     return `${this.sizeStyle};${this.gapStyle}`
   }
 
-  get className() {
+  override get className() {
     return `${this.direction} dock-item`
   }
 
-  render() {
+  override render() {
     return html`
       <li class=${this.className} style=${this.liStyle}>
         <div class="dock-item__pos">
@@ -63,7 +63,7 @@ export class DockItem extends LitElement {
     `
   }
 
-  updated(changedProperties: any) {
+  override updated(changedProperties: any) {
     if (changedProperties.has('scale') || changedProperties.has('size') || changedProperties.has('width'))
       this.onScaleChanged(this.scale)
   }
@@ -113,7 +113,7 @@ export class DockItem extends LitElement {
     })
   }
 
-  static styles = css`
+  static override styles = css`
     :host {
       display: block;
       flex: 0 0 auto;

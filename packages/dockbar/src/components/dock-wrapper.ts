@@ -86,8 +86,8 @@ function isDockItemElement(node: Element): node is DockItem {
   return node.nodeName.toUpperCase() === 'DOCK-ITEM'
 }
 
-function isDockSeparatorElement(node: Element): node is DockSeparator {
-  return node.nodeName.toUpperCase() === 'DOCK-SEPARATOR'
+function isDockSeparatorElement(node: Element | undefined): node is DockSeparator {
+  return node?.nodeName.toUpperCase() === 'DOCK-SEPARATOR'
 }
 
 function isDockLayoutChild(node: Element): node is DockLayoutChild {
@@ -310,7 +310,7 @@ export class DockWrapper extends LitElement {
     return asBoolean(this.willChange)
   }
 
-  disconnectedCallback(): void {
+  override disconnectedCallback(): void {
     super.disconnectedCallback()
     this._dragState?.preview?.remove()
     this.shadowRoot?.host?.removeEventListener('click', this.onHostClick as EventListener, true)
@@ -325,7 +325,7 @@ export class DockWrapper extends LitElement {
     window.removeEventListener('resize', this.onResize)
   }
 
-  get className() {
+  override get className() {
     const names = ['dock-wrapper', this.position, this.direction]
     if (this._moving)
       names.push('moving')
@@ -345,7 +345,7 @@ export class DockWrapper extends LitElement {
       .join(';')
   }
 
-  render() {
+  override render() {
     return html`
       <ul class=${this.className} style="${this.wrapperStyle}">
         <slot @slotchange=${this.onSlotChange}></slot>
@@ -353,7 +353,7 @@ export class DockWrapper extends LitElement {
     `
   }
 
-  updated(changedProperties: Map<string, unknown>) {
+  override updated(changedProperties: Map<string, unknown>) {
     if (changedProperties.has('direction'))
       setTimeout(this.onResize)
     if (changedProperties.has('willChange'))
@@ -949,7 +949,7 @@ export class DockWrapper extends LitElement {
     dragState.item.style.top = `${rect.top}px`
   }
 
-  static styles = css`
+  static override styles = css`
     ul.dock-wrapper {
       box-sizing: border-box;
       margin: 0;

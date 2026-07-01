@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import Vue from '@vitejs/plugin-vue'
 import Pages from 'vite-plugin-pages'
 import generateSitemap from 'vite-ssg-sitemap'
@@ -43,8 +43,10 @@ export default defineConfig({
         'vue',
         'vue-router',
         'vue-i18n',
-        '@vueuse/head',
         '@vueuse/core',
+        {
+          '@unhead/vue': ['useHead', 'useSeoMeta'],
+        },
       ],
       dts: 'src/auto-imports.d.ts',
       dirs: [
@@ -105,18 +107,12 @@ export default defineConfig({
   test: {
     include: ['test/**/*.test.ts'],
     environment: 'jsdom',
-    deps: {
-      inline: ['@vue', '@vueuse', 'vue-demi'],
-    },
   },
 
   // https://github.com/antfu/vite-ssg
   ssgOptions: {
     script: 'async',
     formatting: 'minify',
-    crittersOptions: {
-      reduceInlineStyles: false,
-    },
     onFinished() {
       generateSitemap()
     },

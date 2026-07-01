@@ -1,7 +1,7 @@
 import fs from "fs"
 import { dirname, resolve } from "path"
 import { execa } from "execa"
-import { writeFile, readFile } from "fs/promises"
+import { copyFile, writeFile, readFile, rm } from "fs/promises"
 import { execSync } from "child_process"
 import { fileURLToPath } from "url"
 import chalk from "chalk";
@@ -30,12 +30,12 @@ async function getPackageJSON() {
 async function clean() {
   if (!fs.existsSync(`${rootDir}/dist`)) return
   info("Cleaning dist folder...")
-  await execa("shx", ["rm", "-rf", "dist"])
+  await rm(distDir, { recursive: true, force: true })
 }
 
 async function build() {
   info("Building components & types declarations...")
-  await execa("pnpm", ["build:dockbar"])
+  await execa("corepack", ["pnpm", "--dir", "packages/dockbar", "run", "build"])
 }
 
 async function addPackageJSON() {
@@ -57,11 +57,7 @@ async function addAssets() {
     "LICENSE",
   ]
   for (const asset of assetsList) {
-    await execa("shx", [
-      "cp", "-rf", 
-      resolve(rootDir, asset), 
-      resolve(distDir, asset)]
-    )
+    await copyFile(resolve(rootDir, asset), resolve(distDir, asset))
   }
 }
 
